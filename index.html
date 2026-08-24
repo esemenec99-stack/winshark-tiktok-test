@@ -41,8 +41,10 @@
             font-weight: bold;
         }
 
-        .tiktok-button:hover {
-            opacity: 0.85;
+        .success {
+            color: green;
+            font-size: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -50,15 +52,16 @@
 <body>
 
 <div class="container">
+
     <h1>Winshark TikTok Test</h1>
 
-    <p>
-        TikTok integration test website for Login Kit.
-    </p>
+    <div id="content">
+        <p>TikTok integration test website for Login Kit.</p>
+        <a id="tiktok-login" class="tiktok-button" href="#">
+            Увійти через TikTok
+        </a>
+    </div>
 
-    <a id="tiktok-login" class="tiktok-button" href="#">
-        Увійти через TikTok
-    </a>
 </div>
 
 <script>
@@ -67,17 +70,34 @@
     const redirectUri =
         "https://esemenec99-stack.github.io/winshark-tiktok-test/";
 
-    const state = "winshark_test";
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const error = params.get("error");
 
-    const loginUrl =
-        "https://www.tiktok.com/v2/auth/authorize/" +
-        "?client_key=" + encodeURIComponent(clientKey) +
-        "&response_type=code" +
-        "&scope=user.info.basic" +
-        "&redirect_uri=" + encodeURIComponent(redirectUri) +
-        "&state=" + encodeURIComponent(state);
+    if (code) {
+        document.getElementById("content").innerHTML = `
+            <p class="success">✅ TikTok authorization successful!</p>
+            <p>You have successfully authorized the Winshark Test Sandbox application.</p>
+        `;
+    } else if (error) {
+        document.getElementById("content").innerHTML = `
+            <p>❌ TikTok authorization failed.</p>
+            <p>Error: ${error}</p>
+        `;
+    } else {
 
-    document.getElementById("tiktok-login").href = loginUrl;
+        const state = "winshark_test";
+
+        const loginUrl =
+            "https://www.tiktok.com/v2/auth/authorize/" +
+            "?client_key=" + encodeURIComponent(clientKey) +
+            "&response_type=code" +
+            "&scope=user.info.basic" +
+            "&redirect_uri=" + encodeURIComponent(redirectUri) +
+            "&state=" + encodeURIComponent(state);
+
+        document.getElementById("tiktok-login").href = loginUrl;
+    }
 </script>
 
 </body>
